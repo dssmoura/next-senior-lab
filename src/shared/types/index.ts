@@ -1,0 +1,2 @@
+// Export all shared types here
+// Example: export type { User } from './user';
