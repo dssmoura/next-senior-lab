@@ -1,10 +1,20 @@
 "use client";
+
 import { LoginBox } from "@/shared/components/organisms/LoginBox";
+import { authService } from "@/shared/services/authService";
 
 export default function LoginPage() {
-  const handleSubmit = (data: { email: string; password: string }) => {
-    console.log("Login:", data);
-    // futura integração com useAuth / API
+  const handleSubmit = async (data: { email: string; password: string }) => {
+    try {
+      const response = await authService.login(data);
+
+      console.log("Token:", response.token);
+      alert("Login OK! Token: " + response.token);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      alert("Erro: " + error.message);
+    }
   };
 
   return (

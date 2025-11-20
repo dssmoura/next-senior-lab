@@ -1,14 +1,17 @@
 import React from "react";
-import { Label } from "@/shared/components/atoms/Label";
 import { Input } from "@/shared/components/atoms/Input";
 
 export type FormFieldProps = {
   id: string;
   label: string;
-  name?: string;
   type?: string;
   placeholder?: string;
   required?: boolean;
+
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+  className?: string;
 };
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -17,19 +20,24 @@ export const FormField: React.FC<FormFieldProps> = ({
   type = "text",
   placeholder,
   required,
+  value,
+  onChange,
+  className,
 }) => {
   return (
-    <div className="mb-4">
-      <Label htmlFor={id}>
+    <div className="flex flex-col gap-1 mb-3">
+      <label htmlFor={id} className="text-blue-700 text-sm font-semibold">
         {label}
-        {required ? " *" : ""}
-      </Label>
+      </label>
+
       <Input
         id={id}
-        name={id}
         type={type}
         placeholder={placeholder}
-        aria-required={required}
+        required={required}
+        value={value}
+        onChange={onChange}
+        className={className}
       />
     </div>
   );

@@ -30,6 +30,8 @@ export const LoginBox: React.FC<LoginBoxProps> = ({ onSubmit }) => {
             placeholder="you@exemplo.com"
             type="email"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <FormField
@@ -38,6 +40,8 @@ export const LoginBox: React.FC<LoginBoxProps> = ({ onSubmit }) => {
             placeholder="••••••••"
             type="password"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
           <div className="pt-2">

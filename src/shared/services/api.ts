@@ -47,6 +47,15 @@ export const api = {
     body?: unknown,
   ): Promise<T> {
     // 👉 AQUI FICA A CONSTANTE HEADERS
+    if (process.env.NEXT_PUBLIC_MOCK_API === "true") {
+      console.log("[MOCK] Request:", method, url);
+
+      if (url === "/auth/login") {
+        return {
+          token: "mock-token-123",
+        } as T;
+      }
+    }
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
