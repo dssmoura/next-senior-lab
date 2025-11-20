@@ -14,7 +14,7 @@ export const Label: React.FC<LabelProps> = ({
   return (
     <label
       {...rest}
-      className={`${visuallyHidden ? "sr-only" : ""} block text-sm font-medium ${className}`}
+      className={`${visuallyHidden ? "sr-only" : ""} block  text-blue-400 text-sm font-medium ${className}`}
     >
       {children}
     </label>

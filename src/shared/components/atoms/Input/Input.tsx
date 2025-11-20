@@ -7,7 +7,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <input
         ref={ref}
-        className={`block w-full rounded-md border-2 border-blue-400 px-3 py-2 text-sm placeholder:text-gray-400 ${className}`}
+        className={`block w-full rounded-md border-2 border-blue-400 px-3 py-2 text-sm text-blue-400 placeholder:text-blue-400 ${className}`}
         {...rest}
       />
     );
