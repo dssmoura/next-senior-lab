@@ -1,28 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { FormField } from "@/shared/components/molecules/FormField";
 import { FormGroup } from "@/shared/components/molecules/FormGroup";
 import { Button } from "@/shared/components/atoms/Button";
 
 export type LoginBoxProps = {
-  onSubmit?: (data: { email: string; password: string }) => void;
+  email: string;
+  password: string;
+  loading: boolean;
+  error: string;
+  onEmailChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  onSubmit: () => void;
 };
 
-export const LoginBox: React.FC<LoginBoxProps> = ({ onSubmit }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit?.({ email, password });
-  };
-
+export const LoginBox: React.FC<LoginBoxProps> = ({
+  email,
+  password,
+  loading,
+  error,
+  onEmailChange,
+  onPasswordChange,
+  onSubmit,
+}) => {
   return (
     <div className="max-w-md w-full p-6 rounded-lg shadow-sm bg-blue-50">
       <h2 className="text-2xl text-blue-700 font-semibold mb-4">Entrar</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+      >
         <FormGroup>
           <FormField
             id="email"
@@ -31,7 +42,7 @@ export const LoginBox: React.FC<LoginBoxProps> = ({ onSubmit }) => {
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => onEmailChange(e.target.value)}
           />
 
           <FormField
@@ -41,11 +52,15 @@ export const LoginBox: React.FC<LoginBoxProps> = ({ onSubmit }) => {
             type="password"
             required
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => onPasswordChange(e.target.value)}
           />
 
+          {error && <p className="text-red-500">{error}</p>}
+
           <div className="pt-2">
-            <Button type="submit">Entrar</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Entrando..." : "Entrar"}
+            </Button>
           </div>
         </FormGroup>
       </form>
