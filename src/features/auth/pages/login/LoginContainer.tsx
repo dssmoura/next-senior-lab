@@ -1,7 +1,7 @@
 "use client";
 
-import { LoginBox } from "@/shared/components/organisms/LoginBox";
-import { useLogin } from "@/shared/hooks/useLogin";
+import { LoginBox } from "@/features/auth/components/LoginBox";
+import { useLogin } from "@/features/auth/hooks/useLogin";
 
 export function LoginContainer() {
   const { email, password, loading, error, setEmail, setPassword, handleLogin } =

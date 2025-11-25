@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api } from "@/shared/services/api";
 import type { LoginRequest, LoginResponse } from "@/shared/types/auth";
 
 export const authService = {
