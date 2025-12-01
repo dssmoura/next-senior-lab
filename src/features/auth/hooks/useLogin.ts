@@ -1,39 +1,32 @@
-import { useState } from "react";
+"use client";
+
 import { authService } from "@/features/auth/services/authService";
+import { setToken } from "@/features/auth/utils/token";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import type { LoginRequest } from "@/shared/types/auth";
 
 export function useLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  async function handleLogin() {
-    setError("");
-    console.log(email, password);
-
-    if (!email || !password) {
-      setError("Preencha todos os campos.");
-      return;
-    }
-
+  async function handleLogin(form: LoginRequest) {
     try {
       setLoading(true);
-      await authService.login({ email, password });
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.message ?? "Erro ao fazer login.");
+
+      const response = await authService.login(form);
+
+      const token = response?.token;
+
+      if (!token) throw new Error("Token não encontrado na resposta");
+
+      setToken(token);
+
+      router.push("/dashboard");
     } finally {
       setLoading(false);
     }
   }
 
-  return {
-    email,
-    password,
-    setEmail,
-    setPassword,
-    handleLogin,
-    loading,
-    error,
-  };
+  return { loading, handleLogin };
 }

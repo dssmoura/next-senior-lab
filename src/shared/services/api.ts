@@ -1,94 +1,51 @@
-// ===============================
-// 1) CONSTANTES E TIPOS (FORA)
-// ===============================
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { HttpMethod } from "@/shared/types/http";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.exemplo.com";
-
-type HttpMethod = "GET" | "POST";
-
-interface ApiError {
-  message: string;
-  status?: number;
-}
-
-// ===============================
-// 2) FUNÇÃO DE RETRY (FORA)
-// ===============================
-
-async function fetchWithRetry(fn: () => Promise<Response>, retries = 2) {
-  try {
-    return await fn();
-  } catch (error) {
-    if (retries === 0) throw error;
-    return fetchWithRetry(fn, retries - 1);
-  }
-}
-
-// ===============================
-// 3) OBJETO API (AQUI FICA TUDO)
-// ===============================
+type RequestOptions = {
+  headers?: Record<string, string>;
+  body?: any;
+};
 
 export const api = {
-  // GET -------------------------
-  get: async function <T>(url: string): Promise<T> {
-    return this.request<T>("GET", url);
+  async get<T>(url: string, options: RequestOptions = {}): Promise<T> {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers ?? {}),
+      },
+    });
+    return res.json();
   },
 
-  // POST -------------------------
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  post: async function <T>(url: string, body?: any): Promise<T> {
-    return this.request<T>("POST", url, body);
+  async post<T>(url: string, body?: any, options: RequestOptions = {}): Promise<T> {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers ?? {}),
+      },
+      body: JSON.stringify(body),
+    });
+
+    return res.json();
   },
 
-  // REQUEST ----------------------
-  request: async function <T>(
+  async request<T>(
     method: HttpMethod,
     url: string,
     body?: unknown,
+    options: RequestOptions = {},
   ): Promise<T> {
-    // 👉 AQUI FICA A CONSTANTE HEADERS
-    if (process.env.NEXT_PUBLIC_MOCK_API === "true") {
-      console.log("[MOCK] Request:", method, url);
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers ?? {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
 
-      if (url === "/auth/login") {
-        return {
-          token: "mock-token-123",
-        } as T;
-      }
-    }
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-
-    // FETCH COM RETRY
-    const response = await fetchWithRetry(
-      () =>
-        fetch(`${BASE_URL}${url}`, {
-          method,
-          headers,
-          body: body ? JSON.stringify(body) : undefined,
-        }),
-      2,
-    );
-
-    // ERRO PADRONIZADO
-    if (!response.ok) {
-      const error: ApiError = {
-        message: "Erro ao comunicar com o servidor",
-        status: response.status,
-      };
-
-      try {
-        const errorBody = await response.json();
-        error.message = errorBody.message || error.message;
-      } catch {}
-
-      throw error;
-    }
-
-    // RETORNO TIPADO COM GENERICS
-    const data = await response.json();
-    return data as T;
+    return res.json();
   },
 };

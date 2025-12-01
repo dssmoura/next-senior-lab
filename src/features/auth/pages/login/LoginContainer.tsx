@@ -1,21 +1,35 @@
 "use client";
 
-import { LoginBox } from "@/features/auth/components/LoginBox";
 import { useLogin } from "@/features/auth/hooks/useLogin";
+import { useState } from "react";
+import { LoginBox } from "@/features/auth/components/LoginBox/LoginBox";
 
 export function LoginContainer() {
-  const { email, password, loading, error, setEmail, setPassword, handleLogin } =
-    useLogin();
+  const { handleLogin, loading } = useLogin();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  async function onSubmit() {
+    setError("");
+
+    try {
+      await handleLogin({ email, password });
+    } catch (err) {
+      setError("Credenciais inválidas");
+    }
+  }
 
   return (
     <LoginBox
       email={email}
       password={password}
-      error={error}
       loading={loading}
+      error={error}
       onEmailChange={setEmail}
       onPasswordChange={setPassword}
-      onSubmit={handleLogin}
+      onSubmit={onSubmit}
     />
   );
 }
