@@ -4,6 +4,7 @@ import type { HttpMethod } from "@/shared/types/http";
 type RequestOptions = {
   headers?: Record<string, string>;
   body?: any;
+  signal?: AbortSignal;
 };
 
 export const api = {
@@ -14,6 +15,7 @@ export const api = {
         "Content-Type": "application/json",
         ...(options.headers ?? {}),
       },
+      signal: options.signal,
     });
     return res.json();
   },
@@ -26,6 +28,7 @@ export const api = {
         ...(options.headers ?? {}),
       },
       body: JSON.stringify(body),
+      signal: options.signal,
     });
 
     return res.json();
@@ -44,6 +47,7 @@ export const api = {
         ...(options.headers ?? {}),
       },
       body: body ? JSON.stringify(body) : undefined,
+      signal: options.signal,
     });
 
     return res.json();
